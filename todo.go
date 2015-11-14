@@ -10,12 +10,14 @@ type Todo struct {
 	Title string // Description
 }
 
-// Database connection
-var db *sql.DB
+// TodoManager manages a list of todos in a sql database.
+type TodoManager struct {
+	db *sql.DB // Database connection
+}
 
 // Save saves the given Todo in the database.
-func Save(todo *Todo) error {
-	res, err := db.Exec("INSERT INTO todos VALUES (null, ?)", todo.Title)
+func (t *TodoManager) Save(todo *Todo) error {
+	res, err := t.db.Exec("INSERT INTO todos VALUES (null, ?)", todo.Title)
 	if err != nil {
 		return err
 	}
@@ -24,8 +26,8 @@ func Save(todo *Todo) error {
 }
 
 // All returns the list of all the Tasks in the database.
-func List() ([]*Todo, error) {
-	rows, err := db.Query("SELECT * FROM todos")
+func (t *TodoManager) List() ([]*Todo, error) {
+	rows, err := t.db.Query("SELECT * FROM todos")
 	if err != nil {
 		return nil, err
 	}
@@ -47,23 +49,23 @@ func List() ([]*Todo, error) {
 }
 
 // Delete deltes the Todo with the given id in the database.
-func Delete(id int64) error {
-	_, err := db.Exec("DELETE FROM todos WHERE id = ?", id)
+func (t *TodoManager) Delete(id int64) error {
+	_, err := t.db.Exec("DELETE FROM todos WHERE id = ?", id)
 	return err
 }
 
-// connect is a helper function that creates the database
-// connection and creates required tables.
-func connect(driver, datasource string) *sql.DB {
+// NewTodoManager returns a TodoManager with a sql database
+// setup and configured.
+func NewTodoManager(driver, datasource string) (*TodoManager, error) {
 	db, err := sql.Open(driver, datasource)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	_, err = db.Exec(schema)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return db
+	return &TodoManager{db}, nil
 }
 
 const schema = `

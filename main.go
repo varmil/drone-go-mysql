@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	var todos *TodoManager
 
 	app := cli.NewApp()
 	app.Name = "todo"
@@ -26,11 +27,12 @@ func main() {
 		},
 	}
 	app.Before = func(c *cli.Context) error {
-		db = connect(
+		var err error
+		todos, err = NewTodoManager(
 			c.GlobalString("driver"),
 			c.GlobalString("datasource"),
 		)
-		return nil
+		return err
 	}
 	app.Commands = []cli.Command{
 		{
@@ -43,7 +45,7 @@ func main() {
 				todo.Title = c.Args().First()
 
 				// save the todo to the datbase
-				err := Save(todo)
+				err := todos.Save(todo)
 				if err != nil {
 					fmt.Println(err)
 					os.Exit(1)
@@ -62,7 +64,7 @@ func main() {
 					os.Exit(1)
 				}
 				// deletes the todo by id
-				err = Delete(id)
+				err = todos.Delete(id)
 				if err != nil {
 					fmt.Println(err)
 					os.Exit(1)
@@ -75,13 +77,13 @@ func main() {
 			Usage: "lists all todos",
 			Action: func(c *cli.Context) {
 				// fetch all todo items from the database
-				todos, err := List()
+				list, err := todos.List()
 				if err != nil {
 					fmt.Println(err)
 					os.Exit(1)
 				}
 				// print each to the console
-				for _, todo := range todos {
+				for _, todo := range list {
 					fmt.Println(todo.ID, todo.Title)
 				}
 			},

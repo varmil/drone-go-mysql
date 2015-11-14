@@ -4,49 +4,84 @@ import (
 	"testing"
 )
 
-func TestTodo(t *testing.T) {
-	db = connect("mysql", "root@tcp(127.0.0.1:3306)/todo")
+var testTodo = Todo{Title: "download drone"}
 
-	todos := []Todo{
-		Todo{Title: "download drone"},
-		Todo{Title: "setup continuous integration"},
-		Todo{Title: "profit"},
+var testTodos = []Todo{
+	Todo{Title: "download drone"},
+	Todo{Title: "setup continuous integration"},
+	Todo{Title: "profit"},
+}
+
+var todos *TodoManager
+
+func TestSave(t *testing.T) {
+	setup()
+	defer teardown()
+
+	err := todos.Save(&testTodo)
+	if err != nil {
+		t.Errorf("Wanted to save todo, got error. %s", err)
+	}
+	if testTodo.ID == 0 {
+		t.Errorf("Wanted todo id assignment, got 0")
 	}
 
-	// test saving to the database
-	for _, todo := range todos {
-		err := Save(&todo)
-		if err != nil {
-			t.Errorf("Error saving todo. %s", err)
-		}
-		if todo.ID == 0 {
-			t.Errorf("Wanted todo id assigned, got 0")
-		}
+	after, _ := todos.List()
+	if len(after) != 1 {
+		t.Errorf("Wanted 1 item in the todo list, got %d todos", len(after))
+	}
+}
+
+func TestList(t *testing.T) {
+	setup()
+	defer teardown()
+
+	for _, todo := range testTodos {
+		todos.Save(&todo)
 	}
 
-	// test getting a list from the database
-	list, err := List()
+	list, err := todos.List()
 	if err != nil {
 		t.Errorf("Error listing todo items. %s", err)
 	}
-	if len(list) != 3 {
-		t.Errorf("Wanted %d items in list, got %d", len(todos), len(list))
+	if len(list) != len(testTodos) {
+		t.Errorf("Wanted %d items in list, got %d", len(testTodos), len(list))
 	}
-	for i, todo := range list {
-		if todo.Title != todos[i].Title {
-			t.Errorf("Wanted todo %s, got %s", todos[i].Title, todo.Title)
-		}
+}
+
+func TestDelete(t *testing.T) {
+	setup()
+	defer teardown()
+
+	// save the todo item to the database
+	err := todos.Save(&testTodo)
+	if err != nil {
+		t.Errorf("Wanted to save todo, got error. %s", err)
 	}
 
-	// test deleting items from the database
-	for _, todo := range list {
-		err := Delete(todo.ID)
-		if err != nil {
-			t.Errorf("Error deleting todo %d. %s", todo.ID, err)
-		}
+	// get the count, expected to be 1
+	before, _ := todos.List()
+	if len(before) != 1 {
+		t.Errorf("Wanted 1 item in the todo list, got %d todos", len(before))
 	}
-	list, _ = List()
-	if len(list) != 0 {
-		t.Errorf("Wanted 0 items in list, got %d", len(list))
+
+	// delete the item from the list
+	err = todos.Delete(testTodo.ID)
+	if err != nil {
+		t.Errorf("Wanted to delete todo, got error. %s", err)
 	}
+
+	after, _ := todos.List()
+	if len(after) != 0 {
+		t.Errorf("Wanted empty todo list, got %d todos", len(after))
+	}
+}
+
+func setup() {
+	todos, _ = NewTodoManager("mysql", "root@tcp(127.0.0.1:3306)/todo")
+	todos.db.Exec("DELETE FROM todos")
+}
+
+func teardown() {
+	todos.db.Close()
 }
