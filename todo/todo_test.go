@@ -1,4 +1,4 @@
-package main
+package todo
 
 import (
 	"testing"
@@ -53,19 +53,11 @@ func TestDelete(t *testing.T) {
 	setup()
 	defer teardown()
 
-	// save the todo item to the database
 	err := todos.Save(&testTodo)
 	if err != nil {
 		t.Errorf("Wanted to save todo, got error. %s", err)
 	}
 
-	// get the count, expected to be 1
-	before, _ := todos.List()
-	if len(before) != 1 {
-		t.Errorf("Wanted 1 item in the todo list, got %d todos", len(before))
-	}
-
-	// delete the item from the list
 	err = todos.Delete(testTodo.ID)
 	if err != nil {
 		t.Errorf("Wanted to delete todo, got error. %s", err)
