@@ -14,3 +14,12 @@ compose:
     environment:
       - MYSQL_DATABASE=todo
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes    
+
+guide:
+  name: Go and Mysql 
+  desc: >
+    Example project to demonstrate unit testing Go
+    code that depends on a Mysql database
+  labels:
+    - Go
+    - Mysql
