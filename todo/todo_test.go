@@ -13,7 +13,7 @@ var testTodos = []Todo{
 	Todo{Title: "profit"},
 }
 
-// var todos *TodoManager
+var todos *TodoManager
 
 func TestSave(t *testing.T) {
 	setup()
@@ -71,7 +71,7 @@ func TestDelete(t *testing.T) {
 }
 
 func setup() {
-	todos, _ := NewTodoManager("mysql", "root@tcp(127.0.0.1:3306)/todo")
+	todos, _ = NewTodoManager("mysql", "root@tcp(127.0.0.1:3306)/todo")
 	todos.db.Exec("DELETE FROM todos")
 }
 
