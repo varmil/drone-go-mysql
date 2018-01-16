@@ -56,7 +56,7 @@ func (t *TodoManager) Delete(id int64) error {
 
 // NewTodoManager returns a TodoManager with a sql database
 // setup and configured.
-func NewTodoManager(driver, datasource string) (*TodoManager, error) {
+func NewTodoManager(driver, datasource string) (*sql.DB, error) {
 	db, err := sql.Open(driver, datasource)
 	if err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func NewTodoManager(driver, datasource string) (*TodoManager, error) {
 		return nil, err
 	}
 
-	return &TodoManager{db}, nil
+	return db, nil
 }
 
 // const dbName = "todo"
