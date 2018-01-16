@@ -61,16 +61,30 @@ func NewTodoManager(driver, datasource string) (*TodoManager, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	_,err = db.Exec("CREATE DATABASE " + dbName)
+	if err != nil {
+			return nil, err
+	}
+
+	_,err = db.Exec("USE " + dbName)
+	if err != nil {
+			return nil, err
+	}
+
 	_, err = db.Exec(schema)
 	if err != nil {
 		return nil, err
 	}
+
 	return &TodoManager{db}, nil
 }
 
+const dbName = "todo"
+
 const schema = `
 CREATE TABLE IF NOT EXISTS todos (
-	id INTEGER PRIMARY KEY AUTO_INCREMENT, 
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	title VARCHAR(2000)
 );
 `
