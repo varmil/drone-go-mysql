@@ -8,11 +8,7 @@ pipeline:
       - go test -v -cover
 
 matrix:
-  TESTFOLDER:
-    - integration/user
-    - integration/shopping_cart
-    - integration/payments
-    - units
+  TESTRANGE: [1...4]
 
 workspace:
   base: /go
