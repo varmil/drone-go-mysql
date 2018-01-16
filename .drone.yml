@@ -1,14 +1,18 @@
 pipeline:
   build:
     image: golang:1.10-rc
-    environment:
-      - GOPATH=/go
-      - GOBIN=/go/bin
+    # environment:
+    #   - GOPATH=/go
+    #   - GOBIN=/go/bin
     commands:
       - sleep 10
       - cd todo
       - go get -v
       - go test -v -cover
+
+workspace:
+  base: /go
+  path: src/github.com/varmil/drone-go-mysql
 
 services:
   database:
