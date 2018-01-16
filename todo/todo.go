@@ -5,6 +5,13 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+const schema = `
+CREATE TABLE IF NOT EXISTS todos (
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	title VARCHAR(2000)
+);
+`
+
 type Todo struct {
 	ID    int64  // Unique identifier
 	Title string // Description
@@ -74,17 +81,10 @@ func NewTodoManager(driver, datasource string) (*TodoManager, error) {
 
 	_, err = db.Exec(schema)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &TodoManager{db}, nil
 }
 
 // const dbName = "todo"
-
-const schema = `
-CREATE TABLE IF NOT EXISTS todos (
-	id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	title VARCHAR(2000)
-);
-`

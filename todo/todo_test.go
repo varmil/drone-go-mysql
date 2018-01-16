@@ -13,7 +13,7 @@ var testTodos = []Todo{
 	Todo{Title: "profit"},
 }
 
-var todos *TodoManager
+// var todos *TodoManager
 
 func TestSave(t *testing.T) {
 	setup()
