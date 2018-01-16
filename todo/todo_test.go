@@ -4,7 +4,6 @@ import (
 	"testing"
 )
 
-
 var testTodo = Todo{Title: "download drone"}
 
 var testTodos = []Todo{

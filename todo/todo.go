@@ -69,16 +69,6 @@ func NewTodoManager(driver, datasource string) (*TodoManager, error) {
 		return nil, err
 	}
 
-	// _,err = db.Exec("CREATE DATABASE " + dbName)
-	// if err != nil {
-	// 		return nil, err
-	// }
-  //
-	// _,err = db.Exec("USE " + dbName)
-	// if err != nil {
-	// 		return nil, err
-	// }
-
 	_, err = db.Exec(schema)
 	if err != nil {
 		panic(err)
@@ -86,5 +76,3 @@ func NewTodoManager(driver, datasource string) (*TodoManager, error) {
 
 	return &TodoManager{db}, nil
 }
-
-// const dbName = "todo"
