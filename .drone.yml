@@ -8,7 +8,7 @@ pipeline:
       - go test -v -cover
 
 matrix:
-  TESTRANGE: [1...4]
+  TESTRANGE: [ 1, 2, 3, 4 ]
 
 workspace:
   base: /go
