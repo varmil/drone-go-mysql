@@ -4,7 +4,7 @@ pipeline:
     # environment:
     #   - GO15VENDOREXPERIMENT=1
     commands:
-      - sleep 10
+      - sleep 7
       - cd todo
       - go get -v
       - go test -v -cover
