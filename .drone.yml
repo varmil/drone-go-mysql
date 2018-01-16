@@ -7,6 +7,13 @@ pipeline:
       - go get -v
       - go test -v -cover
 
+matrix:
+  TESTFOLDER:
+    - integration/user
+    - integration/shopping_cart
+    - integration/payments
+    - units
+
 workspace:
   base: /go
   path: src/github.com/varmil/drone-go-mysql
