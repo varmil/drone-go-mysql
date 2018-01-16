@@ -66,7 +66,7 @@ func (t *TodoManager) Delete(id int64) error {
 func NewTodoManager(driver, datasource string) (*TodoManager, error) {
 	db, err := sql.Open(driver, datasource)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	_, err = db.Exec(schema)
