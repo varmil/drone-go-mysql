@@ -72,9 +72,9 @@ func TestDelete(t *testing.T) {
 
 func setup() {
 	todos, _ = NewTodoManager("mysql", "root@tcp(127.0.0.1:3306)/")
-	todos.db.Exec("DELETE FROM todos")
+	todos.Exec("DELETE FROM todos")
 }
 
 func teardown() {
-	todos.db.Close()
+	todos.Close()
 }
